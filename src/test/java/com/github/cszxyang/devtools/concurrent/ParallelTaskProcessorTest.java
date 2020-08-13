@@ -33,29 +33,25 @@ public class ParallelTaskProcessorTest {
     private List<Supplier<Integer>> prepareSuppliers() {
         List<Supplier<Integer>> suppliers = new ArrayList<>();
         suppliers.add(() -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            sleepSeconds(1);
             return 2;
         });
         suppliers.add(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            sleepSeconds(2);
             return 3;
         });
         suppliers.add(() -> {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            sleepSeconds(5);
             return 2;
         });
         return suppliers;
+    }
+
+    private void sleepSeconds(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
