@@ -37,7 +37,7 @@ public class ParallelTaskProcessor {
         private T third;
     }
 
-    public static <F, S, T> ResultHolder<F, S, T> supplyAsync(Supplier<F> first, Supplier<S> second, Supplier<T> third) {
+    public static <F, S, T> ResultHolder<F, S, T> procAsync(Supplier<F> first, Supplier<S> second, Supplier<T> third) {
         ResultHolder<F, S, T> resultHolder = new ResultHolder<>();
         if (Objects.nonNull(first)) {
             CompletableFuture.supplyAsync(first, EXECUTOR).thenAccept(resultHolder::setFirst);
@@ -58,7 +58,7 @@ public class ParallelTaskProcessor {
      * @param <R>       result type
      * @return          a collection of result
      */
-    public static <R> Collection<R> supplyAsync(Collection<Supplier<R>> suppliers, boolean distinct) {
+    public static <R> Collection<R> procAsync(Collection<Supplier<R>> suppliers, boolean distinct) {
         if (CollectionUtils.isEmpty(suppliers)) {
             return distinct ? Collections.emptySet() : Collections.emptyList();
         }
