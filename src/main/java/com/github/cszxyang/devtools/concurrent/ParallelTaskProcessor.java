@@ -27,36 +27,50 @@ public class ParallelTaskProcessor {
         EXECUTOR.setAwaitTerminationSeconds(60 * 30);
         EXECUTOR.initialize();
         logger.info("Thread pool initialization finished. corePoolSize: {}, maxPoolSize: {}",
-                EXECUTOR.getPoolSize(),EXECUTOR.getMaxPoolSize());
+                EXECUTOR.getPoolSize(), EXECUTOR.getMaxPoolSize());
     }
 
     @Data
-    private static class ResultHolder<F, S, T> {
+    public static class ResultHolder<F, S, T> {
         private F first;
         private S second;
         private T third;
     }
 
+    /**
+     * Perform three tasks in parallel
+     *
+     * @param first  the first task
+     * @param second the second task
+     * @param third  the third task
+     * @param <F>    type of the first task
+     * @param <S>    type of the second task
+     * @param <T>    type of the third task
+     * @return a ResultHolder
+     */
     public static <F, S, T> ResultHolder<F, S, T> procAsync(Supplier<F> first, Supplier<S> second, Supplier<T> third) {
         ResultHolder<F, S, T> resultHolder = new ResultHolder<>();
+        List<CompletableFuture> futures = new ArrayList<>(3);
         if (Objects.nonNull(first)) {
-            CompletableFuture.supplyAsync(first, EXECUTOR).thenAccept(resultHolder::setFirst);
+            futures.add(CompletableFuture.supplyAsync(first, EXECUTOR).thenAccept(resultHolder::setFirst));
         }
         if (Objects.nonNull(second)) {
-            CompletableFuture.supplyAsync(second, EXECUTOR).thenAccept(resultHolder::setSecond);
+            futures.add(CompletableFuture.supplyAsync(second, EXECUTOR).thenAccept(resultHolder::setSecond));
         }
         if (Objects.nonNull(third)) {
-            CompletableFuture.supplyAsync(third, EXECUTOR).thenAccept(resultHolder::setThird);
+            futures.add(CompletableFuture.supplyAsync(third, EXECUTOR).thenAccept(resultHolder::setThird));
         }
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         return resultHolder;
     }
 
     /**
      * consume a collection of suppliers and collect res in a certain way
+     *
      * @param suppliers method hangle
      * @param distinct  distinct result
      * @param <R>       result type
-     * @return          a collection of result
+     * @return a collection of result
      */
     public static <R> Collection<R> procAsync(Collection<Supplier<R>> suppliers, boolean distinct) {
         if (CollectionUtils.isEmpty(suppliers)) {
