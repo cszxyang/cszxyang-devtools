@@ -16,7 +16,7 @@ public class ParallelTaskProcessorTest {
     private final Logger logger = LoggerFactory.getLogger(ParallelTaskProcessorTest.class);
 
     @Test
-    public void testProcAsyncExp() throws Exception {
+    public void testProcAsyncExp() {
         long start = System.currentTimeMillis();
         ParallelTaskProcessor.ResultHolder<List<Integer>, Integer, String> fstResultHolder = new ParallelTaskProcessor.ResultHolder<>();
         try {
