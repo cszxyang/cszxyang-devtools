@@ -1,4 +1,4 @@
-package com.github.cszxyang.devtools.beans;
+package util.bean;
 
 import net.sf.cglib.beans.BeanCopier;
 import net.sf.cglib.core.Converter;
